@@ -19,7 +19,7 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken('organization_users')->plainTextToken;
 
         return response()->json([
             'access_token' => $token,

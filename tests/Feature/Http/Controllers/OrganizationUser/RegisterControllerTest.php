@@ -6,7 +6,6 @@ use Illuminate\Testing\Fluent\AssertableJson as Json;
 uses(RefreshDatabase::class);
 
 it('should be able to register a organization user', function () {
-
     $this->postJson(route('organization-user.register'), [
         'name' => 'User Test',
         'email' => 'user-test@user.com',
@@ -34,7 +33,8 @@ it('should return validation errors', function ($field, $value, $error) {
     $this->postJson(route('organization-user.register'), $valid)
         ->assertUnprocessable()
         ->assertJsonValidationErrors([$errorKey])
-        ->assertJson(fn (Json $json) => $json->where("errors.{$errorKey}.0", $error)->etc()
+        ->assertJson(
+            fn (Json $json) => $json->where("errors.{$errorKey}.0", $error)->etc()
         );
 })->with([
     'Name is required' => ['name', '', 'The name field is required.'],
