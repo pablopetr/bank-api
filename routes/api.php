@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\OrganizationUser\LoginController as OrganizationLoginController;
-use App\Http\Controllers\OrganizationUser\RegisterController as OrganizationRegisterController;
 use App\Http\Controllers\IndividualUser\LoginController as IndividualLoginController;
 use App\Http\Controllers\IndividualUser\RegisterController as IndividualRegisterController;
+use App\Http\Controllers\OrganizationUser\LoginController as OrganizationLoginController;
+use App\Http\Controllers\OrganizationUser\RegisterController as OrganizationRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\OrganizationUser\LoginOrganizationUserRequest;
 use App\Models\IndividualUser;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -17,7 +16,7 @@ class LoginController extends Controller
 
         $user = IndividualUser::where('email', $data['email'])->first();
 
-        if (! $user || !Hash::check($data['password'], $user->password)) {
+        if (! $user || ! Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials.'], 401);
         }
 

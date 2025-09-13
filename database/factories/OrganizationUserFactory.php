@@ -2,12 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\OrganizationUser>
- */
 class OrganizationUserFactory extends Factory
 {
     protected static ?string $password;
@@ -18,6 +16,7 @@ class OrganizationUserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
+            'status' => UserStatus::WaitingForApproval->value,
         ];
     }
 }

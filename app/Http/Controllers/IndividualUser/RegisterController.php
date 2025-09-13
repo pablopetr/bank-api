@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\IndividualUser\RegisterIndividualUserRequest;
 use App\Models\IndividualUser;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {

@@ -1,24 +1,39 @@
 <?php
 
+use App\Enums\UserStatus;
+use App\Models\OrganizationUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson as Json;
 
 uses(RefreshDatabase::class);
 
 it('should be able to register an individual user', function () {
-   $this->postjson(route('organization-user.register'), [
-       'name' => 'User Test',
-       'email' => 'user-test@user.com',
-       'password' => 'password',
-       'password_confirmation' => 'password',
-   ])->assertStatus(201)
-       ->assertJson(
-           fn (Json $json) => $json->where('token_type', 'Bearer')
-               ->has('access_token')
-               ->etc()
-       );
+    $this->postjson(route('organization-user.register'), [
+        'name' => 'User Test',
+        'email' => 'user-test@user.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ])->assertStatus(201)
+        ->assertJson(
+            fn (Json $json) => $json->where('token_type', 'Bearer')
+                ->has('access_token')
+                ->etc()
+        );
 });
 
+it('should make the registered individual user status as waiting for approval', function () {
+    $this->postjson(route('organization-user.register'), [
+        'name' => 'User Test',
+        'email' => 'user-test@user.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ])->assertStatus(201);
+
+    $user = OrganizationUser::query()->whereEmail('user-test@user.com')->first();
+
+    expect($user)->not->toBeNull()
+        ->and($user->status)->toBe(UserStatus::WaitingForApproval->value);
+});
 
 it('should return validation errors', function ($field, $value, $error) {
     $valid = [
