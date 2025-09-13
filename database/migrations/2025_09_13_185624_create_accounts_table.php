@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status', AccountStatus::values())->default(AccountStatus::Active->value);
             $table->morphs('accountable');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('status', UserStatus::values())->default(UserStatus::WaitingForApproval->value);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

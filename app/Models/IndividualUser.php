@@ -7,6 +7,8 @@ use App\Observers\IndividualUserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
 #[ObservedBy(IndividualUserObserver::class)]
@@ -14,6 +16,7 @@ class IndividualUser extends Model
 {
     use HasApiTokens;
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -35,5 +38,10 @@ class IndividualUser extends Model
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function accounts(): MorphMany
+    {
+        return $this->morphMany(Account::class, 'accountable');
     }
 }
