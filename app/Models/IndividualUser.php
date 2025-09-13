@@ -8,8 +8,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 class IndividualUser extends Model
 {
-    use HasFactory;
     use HasApiTokens;
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -18,7 +18,7 @@ class IndividualUser extends Model
     ];
 
     protected $hidden = [
-        'password'
+        'password',
     ];
 
     protected function casts(): array

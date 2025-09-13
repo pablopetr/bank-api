@@ -14,10 +14,9 @@ it('should be able to register a organization user', function () {
         'password_confirmation' => 'password',
     ])
         ->assertStatus(201)
-        ->assertJson(fn (Json $json) =>
-            $json->where('token_type', 'Bearer')
-                ->has('access_token')
-                ->etc()
+        ->assertJson(fn (Json $json) => $json->where('token_type', 'Bearer')
+            ->has('access_token')
+            ->etc()
         );
 });
 
@@ -35,8 +34,7 @@ it('should return validation errors', function ($field, $value, $error) {
     $this->postJson(route('organization-user.register'), $valid)
         ->assertUnprocessable()
         ->assertJsonValidationErrors([$errorKey])
-        ->assertJson(fn (Json $json) =>
-            $json->where("errors.{$errorKey}.0", $error)->etc()
+        ->assertJson(fn (Json $json) => $json->where("errors.{$errorKey}.0", $error)->etc()
         );
 })->with([
     'Name is required' => ['name', '', 'The name field is required.'],
@@ -44,7 +42,7 @@ it('should return validation errors', function ($field, $value, $error) {
 
     'Email is required' => ['email', '', 'The email field is required.'],
     'Email must be valid' => ['email', 'invalid-email', 'The email field must be a valid email address.'],
-    'Email max length' => ['email', str_repeat('a', 256) . '@example.com', 'The email field must not be greater than 255 characters.'],
+    'Email max length' => ['email', str_repeat('a', 256).'@example.com', 'The email field must not be greater than 255 characters.'],
 
     'Password is required' => ['password', '', 'The password field is required.'],
     'Password min length' => ['password', 'short', 'The password field must be at least 8 characters.'],
