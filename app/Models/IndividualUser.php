@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\UserStatus;
+use App\Observers\IndividualUserObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
+#[ObservedBy(IndividualUserObserver::class)]
 class IndividualUser extends Model
 {
     use HasApiTokens;
@@ -19,6 +23,10 @@ class IndividualUser extends Model
 
     protected $hidden = [
         'password',
+    ];
+
+    protected $casts = [
+        'status' => UserStatus::class,
     ];
 
     protected function casts(): array
