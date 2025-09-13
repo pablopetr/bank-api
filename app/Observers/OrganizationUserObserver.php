@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Actions\OrganizationUser\CreateUserAccount;
+use App\Actions\CreateUserAccount;
 use App\Enums\UserStatus;
 use App\Models\OrganizationUser;
 
