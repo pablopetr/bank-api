@@ -1,8 +1,11 @@
 <?php
 
 use App\Models\OrganizationUser;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-it('should be able to login a organization user', function () {
+uses(RefreshDatabase::class);
+
+it('should be able to login an organization user', function () {
     $organizationUser = OrganizationUser::factory()->create();
 
     $this->postJson(route('organization-user.login'), [
