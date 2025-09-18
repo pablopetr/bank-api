@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\IndividualUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Symfony\Component\HttpFoundation\Response;
 
 uses(RefreshDatabase::class);
 
 it('should be able to login with an individual user', function () {
-    $individualUser = \App\Models\IndividualUser::factory()->create();
+    $individualUser = IndividualUser::factory()->approved()->create();
 
     $this->postJson(route('individual-user.login'), [
         'email' => $individualUser->email,
@@ -17,14 +19,40 @@ it('should be able to login with an individual user', function () {
 });
 
 it('should not be able to login with invalid credentials', function () {
-    $individualUser = \App\Models\IndividualUser::factory()->create();
+    $individualUser = IndividualUser::factory()->approved()->create();
 
     $this->postJson(route('individual-user.login'), [
         'email' => $individualUser->email,
         'password' => 'wrong-password',
     ])
-        ->assertStatus(401)
+        ->assertStatus(Response::HTTP_UNAUTHORIZED)
         ->assertJson([
             'message' => 'Invalid credentials.',
+        ]);
+});
+
+it('should not be able to login when the user is waiting for approval', function () {
+    $individualUser = IndividualUser::factory()->waitingForApproval()->create();
+
+    $this->postJson(route('individual-user.login'), [
+        'email' => $individualUser->email,
+        'password' => 'password',
+    ])
+        ->assertStatus(Response::HTTP_UNAUTHORIZED)
+        ->assertJson([
+            'message' => 'User is not active.',
+        ]);
+});
+
+it('should not be able to login when the user is rejected', function () {
+    $individualUser = IndividualUser::factory()->rejected()->create();
+
+    $this->postJson(route('individual-user.login'), [
+        'email' => $individualUser->email,
+        'password' => 'password',
+    ])
+        ->assertStatus(Response::HTTP_UNAUTHORIZED)
+        ->assertJson([
+            'message' => 'User is not active.',
         ]);
 });

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 
 class IndividualUserFactory extends Factory
 {
+    use HasUserStatus;
+
     protected static ?string $password;
 
     public function definition(): array
