@@ -16,7 +16,7 @@ class IndividualUserObserver
     public function updated(IndividualUser $individualUser): void
     {
         if ($individualUser->wasChanged('status') && $individualUser->status === UserStatus::Approved) {
-            (new CreateUserAccount())->execute($individualUser);
+            (new CreateUserAccount)->execute($individualUser);
         }
     }
 

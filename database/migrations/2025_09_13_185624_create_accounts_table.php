@@ -10,9 +10,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("DROP SEQUENCE IF EXISTS accounts_number_seq CASCADE");
+        DB::statement('DROP SEQUENCE IF EXISTS accounts_number_seq CASCADE');
 
-        DB::statement("CREATE SEQUENCE accounts_number_seq START WITH 10000 INCREMENT BY 1");
+        DB::statement('CREATE SEQUENCE accounts_number_seq START WITH 10000 INCREMENT BY 1');
 
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();

@@ -3,12 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Enums\UserStatus;
-use App\Jobs\OrganizationUser\UpdateUsersStatusJob as ApproveOrganizationUsersJob;
 use App\Jobs\IndividualUser\UpdateUsersStatusJob as ApproveIndividualUsersJob;
+use App\Jobs\OrganizationUser\UpdateUsersStatusJob as ApproveOrganizationUsersJob;
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
+
 use function Laravel\Prompts\suggest;
 
 class UpdateUsersStatusCommand extends Command
@@ -23,13 +24,13 @@ class UpdateUsersStatusCommand extends Command
     {
         $statusInput = $this->option('status');
 
-        if(!$statusInput) {
+        if (! $statusInput) {
             $statusInput = suggest(
                 label: 'Insert the status to process all users waiting for approval (Approved or Rejected):',
                 options: [UserStatus::Approved->value, UserStatus::Rejected->value],
                 placeholder: 'Approved',
                 required: true,
-                validate: ['status' => 'required|in:' . UserStatus::Approved->value . ',' . UserStatus::Rejected->value],
+                validate: ['status' => 'required|in:'.UserStatus::Approved->value.','.UserStatus::Rejected->value],
             );
         }
 
@@ -38,8 +39,9 @@ class UpdateUsersStatusCommand extends Command
         $this->processIndividualUsers($status);
         $this->processOrganizationUsers($status);
 
-        if(empty($this->jobs)) {
+        if (empty($this->jobs)) {
             $this->info('No users to review.');
+
             return;
         }
 
@@ -48,7 +50,7 @@ class UpdateUsersStatusCommand extends Command
 
     private function processIndividualUsers(UserStatus $status): void
     {
-       IndividualUser::query()
+        IndividualUser::query()
             ->where('status', UserStatus::WaitingForApproval->value)
             ->chunk(100, function ($users) use ($status) {
                 $this->jobs[] = new ApproveIndividualUsersJob($users->pluck('id')->toArray(), $status);

@@ -10,12 +10,10 @@ use Illuminate\Foundation\Queue\Queueable;
 
 class UpdateUsersStatusJob implements ShouldQueue
 {
-    use Queueable;
     use Batchable;
+    use Queueable;
 
-    public function __construct(public array $userIds, public UserStatus $status)
-    {
-    }
+    public function __construct(public array $userIds, public UserStatus $status) {}
 
     public function handle(): void
     {

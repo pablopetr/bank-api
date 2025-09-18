@@ -1,10 +1,7 @@
 <?php
 
-use App\Actions\CreateUserAccount;
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
-use Database\Seeders\IndividualUserSeeder;
-use Database\Seeders\WalletSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 

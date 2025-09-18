@@ -13,9 +13,7 @@ class UpdateUsersStatusJob implements ShouldQueue
     use Batchable;
     use Queueable;
 
-    public function __construct(public array $userIds, public UserStatus $status)
-    {
-    }
+    public function __construct(public array $userIds, public UserStatus $status) {}
 
     public function handle(): void
     {

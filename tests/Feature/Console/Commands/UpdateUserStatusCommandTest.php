@@ -1,13 +1,13 @@
 <?php
 
 use App\Enums\UserStatus;
+use App\Jobs\IndividualUser\UpdateUsersStatusJob as IndividualUserUpdateUsersStatusJob;
+use App\Jobs\OrganizationUser\UpdateUsersStatusJob as OrganizationUserUpdateUsersStatusJob;
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
 use Illuminate\Bus\PendingBatch;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-use \App\Jobs\OrganizationUser\UpdateUsersStatusJob as OrganizationUserUpdateUsersStatusJob;
-use \App\Jobs\IndividualUser\UpdateUsersStatusJob as IndividualUserUpdateUsersStatusJob;
 
 uses(RefreshDatabase::class);
 

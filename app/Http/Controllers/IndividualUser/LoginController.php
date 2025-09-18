@@ -22,7 +22,7 @@ class LoginController extends Controller
             return response()->json(['message' => 'Invalid credentials.'], Response::HTTP_UNAUTHORIZED);
         }
 
-        if( $user->status !== UserStatus::Approved) {
+        if ($user->status !== UserStatus::Approved) {
             return response()->json(['message' => 'User is not active.'], Response::HTTP_UNAUTHORIZED);
         }
 

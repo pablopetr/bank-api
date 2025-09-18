@@ -15,8 +15,8 @@ class OrganizationUserObserver
 
     public function updated(OrganizationUser $organizationUser): void
     {
-        if($organizationUser->wasChanged('status') && $organizationUser->status === UserStatus::Approved) {
-            (new CreateUserAccount())->execute($organizationUser);
+        if ($organizationUser->wasChanged('status') && $organizationUser->status === UserStatus::Approved) {
+            (new CreateUserAccount)->execute($organizationUser);
         }
     }
 
