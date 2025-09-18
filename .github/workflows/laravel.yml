@@ -34,43 +34,46 @@ jobs:
           extensions: >-
             dom, xml, mbstring, curl, zip, intl, bcmath, gd,
             pdo_pgsql, pgsql
-          coverage: none
           tools: composer:v2
+          coverage: none
 
-      - run: php -v && php -m
-
-      - name: Copy .env
+      - name: Copy .env (base)
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-
-      - name: Configure APP_KEY (needed before migrate)
-        run: php artisan key:generate
-
-      - name: Cache Composer packages
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
 
       - name: Install Dependencies
         run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      - name: Run migrations
+      - name: App key
+        run: php artisan key:generate
+
+      - name: Write .env.testing
+        run: |
+          cat > .env.testing <<'EOF'
+          APP_ENV=testing
+          APP_KEY=${APP_KEY:-base64:dummy}
+          CACHE_DRIVER=array
+          SESSION_DRIVER=array
+          QUEUE_CONNECTION=sync
+
+          DB_CONNECTION=pgsql
+          DB_HOST=127.0.0.1
+          DB_PORT=5432
+          DB_DATABASE=bank_api_test
+          DB_USERNAME=postgres
+          DB_PASSWORD=postgres
+          EOF
+
+      - name: Debug DB target
+        run: |
+          php -r "echo 'DB from getenv: '.getenv('DB_CONNECTION').PHP_EOL;"
+          php -r "require 'vendor/autoload.php'; \$app=require 'bootstrap/app.php'; echo 'DB from config: '.(\$app->make('config')->get('database.default')).PHP_EOL;"
+
+      - name: Run migrations (testing env)
         env:
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: bank_api_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
+          APP_ENV: testing
         run: php artisan migrate --force
 
-      - name: Run tests
+      - name: Run tests (testing env)
         env:
-          DB_CONNECTION: pgsql
-          DB_HOST: 127.0.0.1
-          DB_PORT: 5432
-          DB_DATABASE: bank_api_test
-          DB_USERNAME: postgres
-          DB_PASSWORD: postgres
+          APP_ENV: testing
         run: php artisan test
