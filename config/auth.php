@@ -44,6 +44,16 @@ return [
         'api' => [
             'driver' => 'sanctum',
         ],
+
+        'organization_users' => [
+            'driver' => 'session',
+            'provider' => 'organization_users',
+        ],
+
+        'individual_users' => [
+            'driver' => 'session',
+            'provider' => 'individual_users',
+        ],
     ],
 
     /*

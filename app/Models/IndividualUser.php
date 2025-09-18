@@ -4,19 +4,24 @@ namespace App\Models;
 
 use App\Enums\UserStatus;
 use App\Observers\IndividualUserObserver;
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 #[ObservedBy(IndividualUserObserver::class)]
-class IndividualUser extends Model
+class IndividualUser extends Model implements AuthenticatableContract
 {
+    use Authenticatable;
     use HasApiTokens;
     use HasFactory;
     use SoftDeletes;
+
+    protected $guard = 'individual_users';
 
     protected $fillable = [
         'name',

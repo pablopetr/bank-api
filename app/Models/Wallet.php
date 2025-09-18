@@ -11,6 +11,8 @@ class Wallet extends Model
 {
     use HasFactory;
 
+    public const DEFAULT_WALLET_NAME = 'My Wallet';
+
     protected $fillable = [
         'name',
         'balance',
