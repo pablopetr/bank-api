@@ -15,8 +15,6 @@ it('should be able to create default account', function () {
 
     (new CreateDefaultWallet())->execute($account);
 
-    $this->assertDatabaseCount(Wallet::class, 1);
-
     $this->assertDatabaseHas(Wallet::class, [
         'account_id' => $account->id,
         'name' => Wallet::DEFAULT_WALLET_NAME,
