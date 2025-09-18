@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('number')
-                ->default(DB::raw("nextval('number_seq')"))
+                ->default(DB::raw("nextval('accounts_number_seq')"))
                 ->unique();
             $table->enum('status', AccountStatus::values())->default(AccountStatus::Active->value);
             $table->morphs('accountable');
