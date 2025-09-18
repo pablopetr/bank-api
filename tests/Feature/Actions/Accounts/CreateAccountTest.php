@@ -12,7 +12,7 @@ it('should be able to create an account', function (string $modelClass) {
     /** @var $modelClass IndividualUser|OrganizationUser */
     $user = $modelClass::factory()->create();
 
-    $account = (new CreateAccount())->execute($user);
+    $account = (new CreateAccount)->execute($user);
 
     $this->assertInstanceOf(Account::class, $account);
 
@@ -32,9 +32,9 @@ it('should be able to create account with sequential number', function (string $
     /** @var $modelClass IndividualUser|OrganizationUser */
     $user = $modelClass::factory()->create();
 
-    (new CreateAccount())->execute($user);
+    (new CreateAccount)->execute($user);
 
-    $account = (new CreateAccount())->execute($user);
+    $account = (new CreateAccount)->execute($user);
 
     $this->assertInstanceOf(Account::class, $account);
 

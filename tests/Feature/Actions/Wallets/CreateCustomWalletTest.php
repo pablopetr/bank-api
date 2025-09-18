@@ -8,11 +8,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('should be able to create custom wallet', function () {
-   $this->assertDatabaseCount(Wallet::class, 0);
+    $this->assertDatabaseCount(Wallet::class, 0);
 
-   $account = Account::factory()->create();
+    $account = Account::factory()->create();
 
-    $wallet = (new CreateCustomWallet())->execute($account, $walletName = 'My Custom Wallet');
+    $wallet = (new CreateCustomWallet)->execute($account, $walletName = 'My Custom Wallet');
 
     $this->assertInstanceOf(Wallet::class, $wallet);
 
@@ -31,10 +31,10 @@ it('should throw a runtime error when a wallet with same name exists in the acco
 
     $this->assertDatabaseCount(Wallet::class, 1);
 
-     $action = (new CreateCustomWallet());
+    $action = (new CreateCustomWallet);
 
-     expect(fn () => $action->execute($account, $walletName))
-         ->toThrow(RuntimeException::class, "A wallet with name '{$walletName}' already exists in the account.");
+    expect(fn () => $action->execute($account, $walletName))
+        ->toThrow(RuntimeException::class, "A wallet with name '{$walletName}' already exists in the account.");
 
     $this->assertDatabaseCount(Wallet::class, 1);
 });

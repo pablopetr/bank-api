@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Account|null $account
+ *
  * @method static \Database\Factories\WalletFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet newQuery()
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Wallet whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class Wallet extends Model

@@ -12,12 +12,12 @@ class DeleteWallet
     {
         $wallet = Wallet::query()->findOrFail($walletId);
 
-        if($wallet->balance > 0) {
-            throw new RuntimeException("Cannot delete a wallet with a positive balance.");
+        if ($wallet->balance > 0) {
+            throw new RuntimeException('Cannot delete a wallet with a positive balance.');
         }
 
-        if($wallet->type === WalletType::Default) {
-            throw new RuntimeException("Cannot delete the default wallet.");
+        if ($wallet->type === WalletType::Default) {
+            throw new RuntimeException('Cannot delete the default wallet.');
         }
 
         $wallet->delete();

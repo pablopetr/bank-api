@@ -12,7 +12,7 @@ it('should be able to delete a wallet', function () {
 
     $this->assertDatabaseCount(Wallet::class, 1);
 
-    (new DeleteWallet())->execute($wallet->id);
+    (new DeleteWallet)->execute($wallet->id);
 
     $this->assertDatabaseCount(Wallet::class, 1);
     $this->assertSoftDeleted($wallet);
@@ -23,7 +23,7 @@ it('should not be able to delete a wallet with positive balance', function () {
 
     $this->assertDatabaseCount(Wallet::class, 1);
 
-    expect(fn () => (new DeleteWallet())->execute($wallet->id))
+    expect(fn () => (new DeleteWallet)->execute($wallet->id))
         ->toThrow(RuntimeException::class, 'Cannot delete a wallet with a positive balance.');
 
     $this->assertDatabaseCount(Wallet::class, 1);
@@ -38,7 +38,7 @@ it('should not be able to delete a default wallet', function () {
 
     $this->assertDatabaseCount(Wallet::class, 1);
 
-    expect(fn () => (new DeleteWallet())->execute($wallet->id))
+    expect(fn () => (new DeleteWallet)->execute($wallet->id))
         ->toThrow(RuntimeException::class, 'Cannot delete the default wallet.');
 
     $this->assertDatabaseCount(Wallet::class, 1);

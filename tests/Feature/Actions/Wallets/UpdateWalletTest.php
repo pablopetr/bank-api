@@ -10,7 +10,7 @@ uses(RefreshDatabase::class);
 it('should be able to update wallet', function () {
     $wallet = Wallet::factory()->create(['type' => WalletType::Wallet]);
 
-    $wallet = (new UpdateWallet())->execute($wallet, $newName = 'Updated Wallet Name');
+    $wallet = (new UpdateWallet)->execute($wallet, $newName = 'Updated Wallet Name');
 
     $this->assertInstanceOf(Wallet::class, $wallet);
 
@@ -25,8 +25,8 @@ it('should not be able to update default wallet', function () {
     $wallet = Wallet::factory()->create(['type' => WalletType::Default]);
 
     $newName = 'Updated Wallet Name';
-    expect(fn () => (new UpdateWallet())->execute($wallet, $newName))
-        ->toThrow(RuntimeException::class, "You cannot update the default wallet.");
+    expect(fn () => (new UpdateWallet)->execute($wallet, $newName))
+        ->toThrow(RuntimeException::class, 'You cannot update the default wallet.');
 
     $this->assertDatabaseHas('wallets', [
         'id' => $wallet->id,

@@ -13,7 +13,7 @@ it('should be able to create default account', function () {
 
     $account = Account::factory()->create();
 
-    $wallet = (new CreateDefaultWallet())->execute($account);
+    $wallet = (new CreateDefaultWallet)->execute($account);
 
     $this->assertInstanceOf(Wallet::class, $wallet);
 

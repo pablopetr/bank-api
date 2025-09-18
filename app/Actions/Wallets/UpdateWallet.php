@@ -10,8 +10,8 @@ class UpdateWallet
 {
     public function execute(Wallet $wallet, string $name): Wallet
     {
-        if($wallet->type === WalletType::Default) {
-            throw new RuntimeException("You cannot update the default wallet.");
+        if ($wallet->type === WalletType::Default) {
+            throw new RuntimeException('You cannot update the default wallet.');
         }
 
         $wallet->update([
