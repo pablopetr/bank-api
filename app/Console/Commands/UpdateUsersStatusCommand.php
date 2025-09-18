@@ -46,7 +46,7 @@ class UpdateUsersStatusCommand extends Command
        IndividualUser::query()
             ->where('status', UserStatus::WaitingForApproval->value)
             ->chunk(100, function ($users) use ($status) {
-                $this->jobs[] = new ApproveOrganizationUsersJob($users->pluck('id')->toArray(), $status);
+                $this->jobs[] = new ApproveIndividualUsersJob($users->pluck('id')->toArray(), $status);
             });
     }
 
@@ -55,7 +55,7 @@ class UpdateUsersStatusCommand extends Command
         OrganizationUser::query()
             ->where('status', UserStatus::WaitingForApproval->value)
             ->chunk(100, function ($users) use ($status) {
-                $this->jobs[] = new ApproveIndividualUsersJob($users->pluck('id')->toArray(), $status);
+                $this->jobs[] = new ApproveOrganizationUsersJob($users->pluck('id')->toArray(), $status);
             });
     }
 }
