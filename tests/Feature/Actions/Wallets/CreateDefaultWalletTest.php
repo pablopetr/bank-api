@@ -13,7 +13,9 @@ it('should be able to create default account', function () {
 
     $account = Account::factory()->create();
 
-    (new CreateDefaultWallet())->execute($account);
+    $wallet = (new CreateDefaultWallet())->execute($account);
+
+    $this->assertInstanceOf(Wallet::class, $wallet);
 
     $this->assertDatabaseHas(Wallet::class, [
         'account_id' => $account->id,

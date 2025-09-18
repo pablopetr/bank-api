@@ -10,7 +10,9 @@ uses(RefreshDatabase::class);
 it('should be able to update wallet', function () {
     $wallet = Wallet::factory()->create(['type' => WalletType::Wallet]);
 
-    (new UpdateWallet())->execute($wallet, $newName = 'Updated Wallet Name');
+    $wallet = (new UpdateWallet())->execute($wallet, $newName = 'Updated Wallet Name');
+
+    $this->assertInstanceOf(Wallet::class, $wallet);
 
     $this->assertDatabaseHas('wallets', [
         'id' => $wallet->id,

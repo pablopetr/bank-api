@@ -12,7 +12,9 @@ it('should be able to create custom wallet', function () {
 
    $account = Account::factory()->create();
 
-    (new CreateCustomWallet())->execute($account, $walletName = 'My Custom Wallet');
+    $wallet = (new CreateCustomWallet())->execute($account, $walletName = 'My Custom Wallet');
+
+    $this->assertInstanceOf(Wallet::class, $wallet);
 
     $this->assertDatabaseCount(Wallet::class, 1);
 

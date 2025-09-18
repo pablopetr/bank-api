@@ -9,9 +9,9 @@ use App\Models\Wallet;
 
 class CreateDefaultWallet
 {
-    public function execute(Account $account): void
+    public function execute(Account $account): Wallet
     {
-        Wallet::query()->create([
+        return Wallet::query()->create([
             'name' => Wallet::DEFAULT_WALLET_NAME,
             'balance' => 0,
             'type' => WalletType::Default,

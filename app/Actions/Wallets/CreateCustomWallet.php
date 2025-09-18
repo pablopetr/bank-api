@@ -9,7 +9,7 @@ use RuntimeException;
 
 class CreateCustomWallet
 {
-    public function execute(Account $account, string $walletName): void
+    public function execute(Account $account, string $walletName): Wallet
     {
         $existentWallet = Wallet::query()
             ->where('account_id', $account->id)
@@ -20,7 +20,7 @@ class CreateCustomWallet
             throw new RuntimeException("A wallet with name '{$walletName}' already exists in the account.");
         }
 
-        Wallet::query()->create([
+        return Wallet::query()->create([
             'name' => $walletName,
             'account_id' => $account->id,
             'balance' => 0.0,
