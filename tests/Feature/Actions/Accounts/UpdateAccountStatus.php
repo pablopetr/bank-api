@@ -36,3 +36,16 @@ it('should not be able to update account status when it already has the status',
     AccountStatus::Inactive->value => [AccountStatus::Inactive, AccountStatus::Inactive],
 ]);
 
+it('should not be able to deactivate account with wallets with positive balance', function () {
+    $account = Account::factory()->create(['status' => AccountStatus::Active]);
+
+    $account->wallets()->create([
+        'name' => 'Test Wallet',
+        'balance' => 100,
+        'type' => 'Wallet',
+        'status' => 'Active',
+    ]);
+
+    expect(fn () => (new UpdateAccountStatus())->execute($account, AccountStatus::Inactive))
+        ->toThrow(RuntimeException::class, "Cannot deactivate account with wallets having a positive balance.");
+});

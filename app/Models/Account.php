@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -56,5 +57,10 @@ class Account extends Model
     public function accountable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function wallets(): HasMany
+    {
+        return $this->hasMany(Wallet::class);
     }
 }
