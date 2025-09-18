@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('status', WalletStatus::values())->default(WalletStatus::Active->value);
             $table->foreignIdFor(Account::class);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -6,6 +6,7 @@ use App\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -34,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Account extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'accountable_id',
