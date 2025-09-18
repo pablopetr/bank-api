@@ -37,11 +37,14 @@ class Account extends Model
     use HasFactory;
     use SoftDeletes;
 
+    public const INITIAL_NUMBER = 10000;
+
     protected $fillable = [
+        'number',
+        'status',
         'accountable_id',
         'accountable_type',
         'account_number',
-        'status',
     ];
 
     protected $casts = [
