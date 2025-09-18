@@ -14,6 +14,7 @@ uses(RefreshDatabase::class);
 it('dispatches a batch with jobs to update users', function (string $modelClass, string $jobClass) {
     Bus::fake();
 
+    /** @var $modelClass IndividualUser|OrganizationUser */
     $modelClass::factory()->count(1)->create([
         'status' => UserStatus::WaitingForApproval->value,
     ]);
@@ -24,6 +25,32 @@ it('dispatches a batch with jobs to update users', function (string $modelClass,
         return count($batch->jobs) === 1
             && collect($batch->jobs)->every(fn ($job) => $job instanceof $jobClass);
     });
+})->with(function () {
+    return [
+        'Individual Users' => [
+            IndividualUser::class,
+            IndividualUserUpdateUsersStatusJob::class,
+        ],
+        'Organization Users' => [
+            OrganizationUser::class,
+            OrganizationUserUpdateUsersStatusJob::class,
+        ],
+    ];
+});
+
+it('it should not dispatch job when users was already reviewed', function (string $modelClass, string $jobClass) {
+    Bus::fake();
+
+    /** @var $modelClass IndividualUser|OrganizationUser */
+    $modelClass::factory()->count(1)->create([
+        'status' => UserStatus::Rejected->value,
+    ]);
+
+    $this->artisan('app:update-users-status --status=Approved')
+        ->assertOk()
+        ->expectsOutput('No users to review.');
+
+    Bus::assertBatchCount(0);
 })->with(function () {
     return [
         'Individual Users' => [

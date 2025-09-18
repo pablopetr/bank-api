@@ -38,6 +38,11 @@ class UpdateUsersStatusCommand extends Command
         $this->processIndividualUsers($status);
         $this->processOrganizationUsers($status);
 
+        if(empty($this->jobs)) {
+            $this->info('No users to review.');
+            return;
+        }
+
         Bus::batch($this->jobs)->dispatch();
     }
 
