@@ -35,12 +35,13 @@ class Wallet extends Model
     use HasFactory;
     use SoftDeletes;
 
-    public const DEFAULT_WALLET_NAME = 'My Wallet';
+    public const DEFAULT_WALLET_NAME = 'Default Wallet';
 
     protected $fillable = [
         'name',
         'balance',
         'type',
+        'account_id',
     ];
 
     protected $casts = [

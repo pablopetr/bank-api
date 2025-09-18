@@ -17,9 +17,10 @@ class AccountFactory extends Factory
         ])->create();
 
         return [
+            'number' => $this->faker->numberBetween([1000000000, 9999999999]),
+            'status' => AccountStatus::Active->value,
             'accountable_id' => $user->id,
             'accountable_type' => get_class($user),
-            'status' => AccountStatus::Active->value,
         ];
     }
 }
