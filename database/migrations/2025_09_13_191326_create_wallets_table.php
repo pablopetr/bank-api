@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\WalletStatus;
 use App\Enums\WalletType;
 use App\Models\Account;
 use Illuminate\Database\Migrations\Migration;
@@ -15,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('balance', 15, 2)->default(0);
             $table->enum('type', WalletType::values())->default(WalletType::Default->value);
+            $table->enum('status', WalletStatus::values())->default(WalletStatus::Active->value);
             $table->foreignIdFor(Account::class);
             $table->timestamps();
         });
