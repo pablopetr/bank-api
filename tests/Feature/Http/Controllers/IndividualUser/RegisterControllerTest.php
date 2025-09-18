@@ -32,7 +32,7 @@ it('should make the registered individual user status as waiting for approval', 
     $user = OrganizationUser::query()->whereEmail('user-test@user.com')->first();
 
     expect($user)->not->toBeNull()
-        ->and($user->status)->toBe(UserStatus::WaitingForApproval->value);
+        ->and($user->status->value)->toBe(UserStatus::WaitingForApproval->value);
 });
 
 it('should return validation errors', function ($field, $value, $error) {
