@@ -27,7 +27,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read int|null $accounts_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- *
  * @method static \Database\Factories\OrganizationUserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrganizationUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrganizationUser newQuery()
@@ -43,7 +42,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrganizationUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrganizationUser withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|OrganizationUser withoutTrashed()
- *
  * @mixin \Eloquent
  */
 class OrganizationUser extends Model implements AuthenticatableContract
