@@ -7,7 +7,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-it('should be able to delete a wallet', function () {
+it('should be able to soft delete a wallet', function () {
     $wallet = Wallet::factory()->create(['balance' => 0, 'type' => WalletType::Wallet]);
 
     $this->assertDatabaseCount(Wallet::class, 1);
