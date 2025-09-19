@@ -2,6 +2,9 @@
 
 use App\Actions\Transfers\CreateTransfer;
 use App\Enums\WalletStatus;
+use App\Exceptions\Wallets\DestinationWalletInactiveException;
+use App\Exceptions\Wallets\SameWalletTransferNotAllowed;
+use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
 use App\Models\Wallet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,8 +12,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 it('should be able to create a transfer', function () {
-    $walletFrom = Wallet::factory()->create(['balance' => 100]);
-    $walletTo = Wallet::factory()->create(['balance' => 50]);
+    $walletFrom = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);
+    $walletTo = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Active]);
 
     (new CreateTransfer)->execute($walletFrom, $walletTo, 50);
 
@@ -22,8 +25,8 @@ it('should be able to create a transfer', function () {
 });
 
 it('should not be able to create a transfer with a non positive amount', function () {
-    $walletFrom = Wallet::factory()->create(['balance' => 100]);
-    $walletTo = Wallet::factory()->create(['balance' => 50]);
+    $walletFrom = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);
+    $walletTo = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Active]);
 
     expect(fn () => (new CreateTransfer)->execute($walletFrom, $walletTo, 0))
         ->toThrow(RuntimeException::class, 'The transfer amount must be greater than zero.');
@@ -36,17 +39,17 @@ it('should not be able to transfer from an inactive wallet', function () {
     $walletTo = Wallet::factory()->create(['balance' => 50]);
 
     expect(fn () => (new CreateTransfer)->execute($walletFrom, $walletTo, 0))
-        ->toThrow(RuntimeException::class, 'The source wallet is inactive.');
+        ->toThrow(SourceWalletInactiveException::class, 'The source wallet is inactive.');
 
     $this->assertDatabaseCount(Transfer::class, 0);
 });
 
 it('should not be able to transfer to an inactive wallet', function () {
-    $walletFrom = Wallet::factory()->create(['balance' => 100]);
+    $walletFrom = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);
     $walletTo = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Inactive]);
 
     expect(fn () => (new CreateTransfer)->execute($walletFrom, $walletTo, 0))
-        ->toThrow(RuntimeException::class, 'The destination wallet is inactive.');
+        ->toThrow(DestinationWalletInactiveException::class, 'The destination wallet is inactive.');
 
     $this->assertDatabaseCount(Transfer::class, 0);
 });
@@ -55,7 +58,7 @@ it('should not be able to transfer to the same wallet', function () {
     $walletFrom = Wallet::factory()->create(['balance' => 100]);
 
     expect(fn () => (new CreateTransfer)->execute($walletFrom, $walletFrom, 0))
-        ->toThrow(RuntimeException::class, 'Cannot transfer to the same wallet.');
+        ->toThrow(SameWalletTransferNotAllowed::class, 'Cannot transfer to the same wallet.');
 
     $this->assertDatabaseCount(Transfer::class, 0);
 });

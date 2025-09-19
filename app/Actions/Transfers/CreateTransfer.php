@@ -4,24 +4,32 @@ namespace App\Actions\Transfers;
 
 use App\Enums\TransferStatus;
 use App\Enums\WalletStatus;
+use App\Exceptions\Wallets\DestinationWalletInactiveException;
+use App\Exceptions\Wallets\SameWalletTransferNotAllowed;
+use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
 use App\Models\Wallet;
 use RuntimeException;
 
 class CreateTransfer
 {
+    /**
+     * @throws SourceWalletInactiveException
+     * @throws DestinationWalletInactiveException
+     * @throws SameWalletTransferNotAllowed
+     */
     public function execute(Wallet $fromWallet, Wallet $toWallet, float $amount): Transfer
     {
         if ($fromWallet->id === $toWallet->id) {
-            throw new RuntimeException('Cannot transfer to the same wallet.');
+            throw new SameWalletTransferNotAllowed('Cannot transfer to the same wallet.');
         }
 
         if ($fromWallet->status == WalletStatus::Inactive) {
-            throw new RuntimeException('The source wallet is inactive.');
+            throw new SourceWalletInactiveException('The source wallet is inactive.');
         }
 
         if ($toWallet->status == WalletStatus::Inactive) {
-            throw new RuntimeException('The destination wallet is inactive.');
+            throw new DestinationWalletInactiveException('The destination wallet is inactive.');
         }
 
         if ($amount <= 0) {

@@ -5,7 +5,8 @@ use App\Actions\Transfers\ValidateTransfer;
 use App\Enums\TransferStatus;
 use App\Enums\WalletStatus;
 use App\Exceptions\Wallets\DestinationWalletInactiveException;
-use App\Exceptions\Wallets\InsufficientBalanceToTransferException;
+use App\Exceptions\Wallets\InsufficientBalanceInWalletToTransferException;
+use App\Exceptions\Wallets\InvalidTransferStatusException;
 use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
 use App\Models\Wallet;
@@ -42,7 +43,7 @@ it('should not validate a transfer when the transfer is not pending', function (
     ]);
 
     expect(fn () => (new ValidateTransfer())->execute($transfer))
-        ->toThrow(RuntimeException::class, 'Only pending transfers can be validated.');
+        ->toThrow(InvalidTransferStatusException::class, 'Only pending transfers can be validated.');
 })->with([
     TransferStatus::Completed->value => [TransferStatus::Completed],
     TransferStatus::Failed->value => [TransferStatus::Failed],
@@ -55,7 +56,7 @@ it('should not validate a transfer when the from wallet has insufficient balance
     $transfer = (new CreateTransfer())->execute($fromWallet, $toWallet, 50);
 
     expect(fn () => (new ValidateTransfer())->execute($transfer))
-        ->toThrow(InsufficientBalanceToTransferException::class, 'Insufficient balance in the source wallet.');
+        ->toThrow(InsufficientBalanceInWalletToTransferException::class, 'Insufficient balance in the source wallet.');
 });
 
 it('should not validate a transfer when the from wallet is inactive', function () {
