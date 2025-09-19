@@ -4,6 +4,9 @@ use App\Actions\Transfers\CreateTransfer;
 use App\Actions\Transfers\ValidateTransfer;
 use App\Enums\TransferStatus;
 use App\Enums\WalletStatus;
+use App\Exceptions\Wallets\DestinationWalletInactiveException;
+use App\Exceptions\Wallets\InsufficientBalanceToTransferException;
+use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
 use App\Models\Wallet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -52,7 +55,7 @@ it('should not validate a transfer when the from wallet has insufficient balance
     $transfer = (new CreateTransfer())->execute($fromWallet, $toWallet, 50);
 
     expect(fn () => (new ValidateTransfer())->execute($transfer))
-        ->toThrow(RuntimeException::class, 'Insufficient balance in the source wallet.');
+        ->toThrow(InsufficientBalanceToTransferException::class, 'Insufficient balance in the source wallet.');
 });
 
 it('should not validate a transfer when the from wallet is inactive', function () {
@@ -67,7 +70,7 @@ it('should not validate a transfer when the from wallet is inactive', function (
     ]);
 
     expect(fn () => (new ValidateTransfer())->execute($transfer))
-        ->toThrow(RuntimeException::class, 'The source wallet is inactive.');
+        ->toThrow(SourceWalletInactiveException::class, 'The source wallet is inactive.');
 });
 
 it('should not validate a transfer when the to wallet is inactive', function () {
@@ -82,5 +85,5 @@ it('should not validate a transfer when the to wallet is inactive', function () 
     ]);
 
     expect(fn () => (new ValidateTransfer())->execute($transfer))
-        ->toThrow(RuntimeException::class, 'The destination wallet is inactive.');
+        ->toThrow(DestinationWalletInactiveException::class, 'The destination wallet is inactive.');
 });
