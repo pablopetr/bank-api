@@ -27,6 +27,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read int|null $accounts_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
+ *
  * @method static \Database\Factories\IndividualUserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IndividualUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IndividualUser newQuery()
@@ -42,6 +43,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IndividualUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IndividualUser withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IndividualUser withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class IndividualUser extends Model implements AuthenticatableContract

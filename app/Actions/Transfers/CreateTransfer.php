@@ -12,19 +12,19 @@ class CreateTransfer
 {
     public function execute(Wallet $fromWallet, Wallet $toWallet, float $amount): Transfer
     {
-        if($fromWallet->id === $toWallet->id) {
+        if ($fromWallet->id === $toWallet->id) {
             throw new RuntimeException('Cannot transfer to the same wallet.');
         }
 
-        if($fromWallet->status == WalletStatus::Inactive) {
+        if ($fromWallet->status == WalletStatus::Inactive) {
             throw new RuntimeException('The source wallet is inactive.');
         }
 
-        if($toWallet->status == WalletStatus::Inactive) {
+        if ($toWallet->status == WalletStatus::Inactive) {
             throw new RuntimeException('The destination wallet is inactive.');
         }
 
-        if($amount <= 0) {
+        if ($amount <= 0) {
             throw new RuntimeException('The transfer amount must be greater than zero.');
         }
 
