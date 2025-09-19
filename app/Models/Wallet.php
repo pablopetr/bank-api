@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\WalletStatus;
 use App\Enums\WalletType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -51,10 +52,12 @@ class Wallet extends Model
         'balance',
         'type',
         'account_id',
+        'status',
     ];
 
     protected $casts = [
         'type' => WalletType::class,
+        'status' => WalletStatus::class,
     ];
 
     public function account(): BelongsTo
