@@ -4,9 +4,6 @@ use App\Enums\WalletStatus;
 use App\Enums\WalletType;
 use App\Models\Account;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create a wallet', function (WalletStatus $status) {
     $account = Account::factory()->create();

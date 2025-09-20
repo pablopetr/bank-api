@@ -3,9 +3,6 @@
 use App\Actions\Wallets\DeleteWallet;
 use App\Enums\WalletType;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to soft delete a wallet', function () {
     $wallet = Wallet::factory()->create(['balance' => 0, 'type' => WalletType::Wallet]);

@@ -3,9 +3,6 @@
 use App\Enums\AccountStatus;
 use App\Enums\UserStatus;
 use App\Models\OrganizationUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should create an account when an organization user is approved', function () {
    $organizationUser = OrganizationUser::factory()->create([

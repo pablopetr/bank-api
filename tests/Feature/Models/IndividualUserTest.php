@@ -3,9 +3,6 @@
 use App\Enums\UserStatus;
 use App\Models\Account;
 use App\Models\IndividualUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create an individual user', function (UserStatus $status) {
     $individualUser = IndividualUser::create([

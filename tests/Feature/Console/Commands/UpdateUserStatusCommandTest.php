@@ -1,15 +1,12 @@
 <?php
 
 use App\Enums\UserStatus;
-use App\Jobs\IndividualUser\UpdateUsersStatusJob as IndividualUserUpdateUsersStatusJob;
-use App\Jobs\OrganizationUser\UpdateUsersStatusJob as OrganizationUserUpdateUsersStatusJob;
+use App\Jobs\IndividualUser\UpdateUserStatusJob as IndividualUserUpdateUsersStatusJob;
+use App\Jobs\OrganizationUser\UpdateUserStatusJob as OrganizationUserUpdateUsersStatusJob;
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
 use Illuminate\Bus\PendingBatch;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
-
-uses(RefreshDatabase::class);
 
 it('dispatches a batch with jobs to update users', function (string $modelClass, string $jobClass) {
     Bus::fake();

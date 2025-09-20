@@ -3,9 +3,6 @@
 use App\Actions\Wallets\UpdateWallet;
 use App\Enums\WalletType;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to update wallet', function () {
     $wallet = Wallet::factory()->create(['type' => WalletType::Wallet]);

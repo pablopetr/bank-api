@@ -6,9 +6,6 @@ use App\Enums\TransferStatus;
 use App\Enums\WalletStatus;
 use App\Models\Transfer;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to process the transfer and mark as approved', function () {
     $fromWallet = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);
@@ -88,6 +85,56 @@ it('should not process transfer when the from wallet is inactive', function () {
     $this->assertDatabaseHas(Transfer::class, [
         'id' => $transfer->id,
         'status' => TransferStatus::Failed->value,
+    ]);
+
+    $fromWallet->refresh();
+    $toWallet->refresh();
+
+    expect($fromWallet->balance)->toBe(number_format(100.00, 2))
+        ->and($toWallet->balance)->toBe(number_format(50.00, 2));
+});
+
+it('should not process transfer when destination wallet is inactive', function () {
+    $fromWallet = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active, 'name' => 'from wallet']);
+    $toWallet = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Inactive, 'name' => 'to wallet']);
+
+    $transfer = Transfer::create([
+        'from_wallet_id' => $fromWallet->id,
+        'to_wallet_id' => $toWallet->id,
+        'amount' => 50,
+        'status' => TransferStatus::Pending,
+    ]);
+
+    (new ProcessTransfer)->execute($transfer);
+
+    $this->assertDatabaseHas(Transfer::class, [
+        'id' => $transfer->id,
+        'status' => TransferStatus::Failed->value,
+    ]);
+
+    $fromWallet->refresh();
+    $toWallet->refresh();
+
+    expect($fromWallet->balance)->toBe(number_format(100.00, 2))
+        ->and($toWallet->balance)->toBe(number_format(50.00, 2));
+});
+
+it('should not process transfer when transfer status is not pending', function () {
+    $fromWallet = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active, 'name' => 'from wallet']);
+    $toWallet = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Active, 'name' => 'to wallet']);
+
+    $transfer = Transfer::create([
+        'from_wallet_id' => $fromWallet->id,
+        'to_wallet_id' => $toWallet->id,
+        'amount' => 50,
+        'status' => TransferStatus::Completed,
+    ]);
+
+    (new ProcessTransfer)->execute($transfer);
+
+    $this->assertDatabaseHas(Transfer::class, [
+        'id' => $transfer->id,
+        'status' => TransferStatus::Completed->value,
     ]);
 
     $fromWallet->refresh();

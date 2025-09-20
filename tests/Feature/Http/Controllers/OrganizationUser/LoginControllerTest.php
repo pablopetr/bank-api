@@ -1,10 +1,7 @@
 <?php
 
 use App\Models\OrganizationUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
-
-uses(RefreshDatabase::class);
 
 it('should be able to login an organization user', function () {
     $organizationUser = OrganizationUser::factory()->approved()->create();
@@ -32,27 +29,31 @@ it('should not be able to login with invalid credentials', function () {
 });
 
 it('should not be able to login when it is waiting for approval', function () {
-    $organizationUser = OrganizationUser::factory()->waitingForApproval()->create();
+    $organizationUser = OrganizationUser::factory()->waitingForApproval()->create([
+        'password' => bcrypt('password'),
+    ]);
 
     $this->postJson(route('organization-user.login'), [
         'email' => $organizationUser->email,
-        'password' => 'wrong-password',
+        'password' => 'password',
     ])
         ->assertStatus(Response::HTTP_UNAUTHORIZED)
         ->assertJson([
-            'message' => 'Invalid credentials.',
+            'message' => 'User is not active.',
         ]);
 });
 
 it('should not be able to login when it is rejected', function () {
-    $organizationUser = OrganizationUser::factory()->rejected()->create();
+    $organizationUser = OrganizationUser::factory()->rejected()->create([
+        'password' => bcrypt('password'),
+    ]);
 
     $this->postJson(route('organization-user.login'), [
         'email' => $organizationUser->email,
-        'password' => 'wrong-password',
+        'password' => 'password',
     ])
         ->assertStatus(Response::HTTP_UNAUTHORIZED)
         ->assertJson([
-            'message' => 'Invalid credentials.',
+            'message' => 'User is not active.',
         ]);
 });

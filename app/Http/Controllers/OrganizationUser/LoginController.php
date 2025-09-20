@@ -23,7 +23,7 @@ class LoginController extends Controller
         }
 
         if ($user->status !== UserStatus::Approved) {
-            return response()->json(['message' => 'User is not active'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['message' => 'User is not active.'], Response::HTTP_UNAUTHORIZED);
         }
 
         $token = $user->createToken('org-auth', ['org'])->plainTextToken;

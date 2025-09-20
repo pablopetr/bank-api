@@ -3,9 +3,6 @@
 use App\Enums\TransferStatus;
 use App\Models\Transfer;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create a transfer', function (TransferStatus $transferStatus) {
     $fromWallet = Wallet::factory()->create();

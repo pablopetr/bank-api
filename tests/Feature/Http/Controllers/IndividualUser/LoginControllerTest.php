@@ -1,10 +1,7 @@
 <?php
 
 use App\Models\IndividualUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
-
-uses(RefreshDatabase::class);
 
 it('should be able to login with an individual user', function () {
     $individualUser = IndividualUser::factory()->approved()->create();

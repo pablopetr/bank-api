@@ -2,9 +2,6 @@
 
 use App\Enums\UserStatus;
 use App\Models\IndividualUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should create an account when an individual user is approved', function () {
     $individualUser = IndividualUser::factory()->create([

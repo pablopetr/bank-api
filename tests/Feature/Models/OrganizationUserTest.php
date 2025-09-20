@@ -3,9 +3,6 @@
 use App\Enums\UserStatus;
 use App\Models\Account;
 use App\Models\OrganizationUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create an organization user', function () {
     $organizationUser = OrganizationUser::create([

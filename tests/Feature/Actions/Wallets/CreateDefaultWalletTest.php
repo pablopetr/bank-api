@@ -4,9 +4,6 @@ use App\Actions\Wallets\CreateDefaultWallet;
 use App\Enums\WalletType;
 use App\Models\Account;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create default account', function () {
     $this->assertDatabaseCount(Wallet::class, 0);

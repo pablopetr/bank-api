@@ -2,9 +2,6 @@
 
 use App\Actions\Accounts\DeleteAccount;
 use App\Models\Account;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to soft delete an account', function () {
     $account = Account::factory()->create();

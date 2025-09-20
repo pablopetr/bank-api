@@ -2,10 +2,7 @@
 
 use App\Enums\UserStatus;
 use App\Models\IndividualUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson as Json;
-
-uses(RefreshDatabase::class);
 
 it('should be able to register an organization user', function () {
     $this->postJson(route('organization-user.register'), [

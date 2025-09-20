@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Enums\UserStatus;
-use App\Jobs\IndividualUser\UpdateUsersStatusJob as ApproveIndividualUsersJob;
-use App\Jobs\OrganizationUser\UpdateUsersStatusJob as ApproveOrganizationUsersJob;
+use App\Jobs\IndividualUser\UpdateUserStatusJob as ApproveIndividualUsersJob;
+use App\Jobs\OrganizationUser\UpdateUserStatusJob as ApproveOrganizationUsersJob;
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
 use Illuminate\Console\Command;
@@ -52,8 +52,9 @@ class UpdateUsersStatusCommand extends Command
     {
         IndividualUser::query()
             ->where('status', UserStatus::WaitingForApproval->value)
-            ->chunk(100, function ($users) use ($status) {
-                $this->jobs[] = new ApproveIndividualUsersJob($users->pluck('id')->toArray(), $status);
+            ->get()
+            ->each(function (IndividualUser $individualUser) use ($status) {
+                $this->jobs[] = new ApproveIndividualUsersJob($individualUser->id, $status);
             });
     }
 
@@ -61,8 +62,9 @@ class UpdateUsersStatusCommand extends Command
     {
         OrganizationUser::query()
             ->where('status', UserStatus::WaitingForApproval->value)
-            ->chunk(100, function ($users) use ($status) {
-                $this->jobs[] = new ApproveOrganizationUsersJob($users->pluck('id')->toArray(), $status);
+            ->get()
+            ->each(function (OrganizationUser $user) use ($status) {
+                $this->jobs[] = new ApproveOrganizationUsersJob($user->id, $status);
             });
     }
 }

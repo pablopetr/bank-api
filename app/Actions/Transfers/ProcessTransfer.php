@@ -25,14 +25,10 @@ class ProcessTransfer
 
                 return;
             }
-        } catch (InsufficientBalanceInWalletToTransferException|DestinationWalletInactiveException|SourceWalletInactiveException|Invalid) {
+        } catch (InsufficientBalanceInWalletToTransferException|DestinationWalletInactiveException|SourceWalletInactiveException) {
             $transfer->update(['status' => TransferStatus::Failed]);
         } catch (InvalidTransferStatusException $exception) {
             report($exception);
-        } catch (RuntimeException $exception) {
-            report($exception);
-
-            $transfer->update(['status' => TransferStatus::Failed]);
         }
     }
 }

@@ -10,9 +10,6 @@ use App\Exceptions\Wallets\InvalidTransferStatusException;
 use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to validate a transfer', function () {
     $fromWallet = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);

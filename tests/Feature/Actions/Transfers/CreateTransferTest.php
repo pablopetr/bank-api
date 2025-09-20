@@ -7,9 +7,6 @@ use App\Exceptions\Wallets\SameWalletTransferNotAllowed;
 use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create a transfer', function () {
     $walletFrom = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);

@@ -7,9 +7,6 @@ use App\Models\OrganizationUser;
 use App\Models\Wallet;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create an account', function () {
     Carbon::setTestNow(now());

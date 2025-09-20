@@ -2,10 +2,7 @@
 
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-
-uses(RefreshDatabase::class);
 
 it('should be able to get user information via sanctum', function (string $model) {
     /** @var IndividualUser|OrganizationUser $user */

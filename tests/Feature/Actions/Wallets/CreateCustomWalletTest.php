@@ -3,9 +3,6 @@
 use App\Actions\Wallets\CreateCustomWallet;
 use App\Models\Account;
 use App\Models\Wallet;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create custom wallet', function () {
     $this->assertDatabaseCount(Wallet::class, 0);

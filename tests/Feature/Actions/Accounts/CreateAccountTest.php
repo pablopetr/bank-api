@@ -4,9 +4,6 @@ use App\Actions\Accounts\CreateAccount;
 use App\Models\Account;
 use App\Models\IndividualUser;
 use App\Models\OrganizationUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('should be able to create an account', function (string $modelClass) {
     /** @var $modelClass IndividualUser|OrganizationUser */

@@ -2,10 +2,7 @@
 
 use App\Enums\UserStatus;
 use App\Models\OrganizationUser;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson as Json;
-
-uses(RefreshDatabase::class);
 
 it('should be able to register an individual user', function () {
     $this->postjson(route('organization-user.register'), [
@@ -46,9 +43,10 @@ it('should return validation errors', function ($field, $value, $error) {
 
     $errorKey = $field === 'password_confirmation' ? 'password' : $field;
 
-    $this->postJson(route('individual-user.register'), $valid)
-        ->assertUnprocessable()
-        ->assertJsonValidationErrors([$errorKey])
+    $response = $this->postJson(route('individual-user.register'), $valid)
+        ->assertUnprocessable();
+
+    $response->assertJsonValidationErrors([$errorKey])
         ->assertJson(
             fn (Json $json) => $json->where("errors.{$errorKey}.0", $error)->etc()
         );
