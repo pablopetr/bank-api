@@ -19,7 +19,7 @@ it('should be able to create a wallet', function (WalletStatus $status) {
 
     expect($wallet)->toBeInstanceOf(Wallet::class)
         ->and($wallet->name)->toBe('My Wallet')
-        ->and($wallet->balance)->toBe(number_format(1000.00, 2, '.', ''))
+        ->and($wallet->balance)->toBe(number_format(1000, 2, '.', ''))
         ->and($wallet->type)->toBe(WalletType::Default)
         ->and($wallet->account_id)->toBe($account->id)
         ->and($wallet->status)->toBe($status);
@@ -28,7 +28,7 @@ it('should be able to create a wallet', function (WalletStatus $status) {
         ->mapWithKeys(function (WalletStatus $status) {
             return [$status->value => [$status]];
         });
-});
+})->repeat(1000);
 
 it('should not be able to create a wallet with invalid type', function () {
     $account = Account::factory()->create();
