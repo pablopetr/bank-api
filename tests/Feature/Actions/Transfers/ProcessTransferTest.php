@@ -14,9 +14,9 @@ it('should be able to process the transfer and mark as approved', function () {
     $fromWallet = Wallet::factory()->create(['balance' => 100, 'status' => WalletStatus::Active]);
     $toWallet = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Active]);
 
-    $transfer = (new CreateTransfer())->execute($fromWallet, $toWallet, 50);
+    $transfer = (new CreateTransfer)->execute($fromWallet, $toWallet, 50);
 
-    (new ProcessTransfer())->execute($transfer);
+    (new ProcessTransfer)->execute($transfer);
 
     $this->assertDatabaseHas(Transfer::class, [
         'id' => $transfer->id,
@@ -41,7 +41,7 @@ it('should not process transfer when the transfer is not pending', function (Tra
         'status' => $status,
     ]);
 
-    (new ProcessTransfer())->execute($transfer);
+    (new ProcessTransfer)->execute($transfer);
 
     $this->assertDatabaseHas(Transfer::class, [
         'id' => $transfer->id,
@@ -56,9 +56,9 @@ it('should not process transfer when the from wallet has insufficient balance', 
     $fromWallet = Wallet::factory()->create(['balance' => 30, 'status' => WalletStatus::Active]);
     $toWallet = Wallet::factory()->create(['balance' => 50, 'status' => WalletStatus::Active]);
 
-    $transfer = (new CreateTransfer())->execute($fromWallet, $toWallet, 50);
+    $transfer = (new CreateTransfer)->execute($fromWallet, $toWallet, 50);
 
-    (new ProcessTransfer())->execute($transfer);
+    (new ProcessTransfer)->execute($transfer);
 
     $this->assertDatabaseHas(Transfer::class, [
         'id' => $transfer->id,
@@ -83,7 +83,7 @@ it('should not process transfer when the from wallet is inactive', function () {
         'status' => TransferStatus::Pending,
     ]);
 
-    (new ProcessTransfer())->execute($transfer);
+    (new ProcessTransfer)->execute($transfer);
 
     $this->assertDatabaseHas(Transfer::class, [
         'id' => $transfer->id,

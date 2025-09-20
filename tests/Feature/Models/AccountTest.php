@@ -67,11 +67,11 @@ it('should be able to get the accountable relationship', function (string $morph
 ]);
 
 it('should be able to get wallets relationship', function () {
-   $account = Account::factory()->create();
+    $account = Account::factory()->create();
 
-   $wallets = Wallet::factory()->count(3)->create([
-       'account_id' => $account->id,
-   ]);
+    $wallets = Wallet::factory()->count(3)->create([
+        'account_id' => $account->id,
+    ]);
 
     expect($account->wallets)->toBeInstanceOf(Collection::class)
         ->and($account->wallets->count())->toBe(3)

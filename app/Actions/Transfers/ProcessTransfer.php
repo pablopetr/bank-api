@@ -15,7 +15,7 @@ class ProcessTransfer
     public function execute(Transfer $transfer): void
     {
         try {
-            $transferValidation = (new ValidateTransfer())->execute($transfer);
+            $transferValidation = (new ValidateTransfer)->execute($transfer);
 
             if ($transferValidation) {
                 $transfer->fromWallet->decrement('balance', $transfer->amount);
@@ -29,8 +29,7 @@ class ProcessTransfer
             $transfer->update(['status' => TransferStatus::Failed]);
         } catch (InvalidTransferStatusException $exception) {
             report($exception);
-        }
-        catch (RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             report($exception);
 
             $transfer->update(['status' => TransferStatus::Failed]);

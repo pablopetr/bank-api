@@ -6,5 +6,5 @@ use Exception;
 
 class SourceWalletInactiveException extends Exception
 {
-    protected $message = "The source wallet is inactive.";
+    protected $message = 'The source wallet is inactive.';
 }
