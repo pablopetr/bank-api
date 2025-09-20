@@ -10,9 +10,8 @@ it('should be able to get user information via sanctum', function (string $model
 
     Sanctum::actingAs($user, ['*']);
 
-    $response = $this->getJson('/api/user');
-
-    $response->assertOk()
+    $this->getJson('/api/user')
+        ->assertOk()
         ->assertJsonStructure([
             'data' => [
                 'id',
