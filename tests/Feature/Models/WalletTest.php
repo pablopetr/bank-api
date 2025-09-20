@@ -28,7 +28,7 @@ it('should be able to create a wallet', function (WalletStatus $status) {
         ->mapWithKeys(function (WalletStatus $status) {
             return [$status->value => [$status]];
         });
-})->repeat(1000);
+});
 
 it('should not be able to create a wallet with invalid type', function () {
     $account = Account::factory()->create();

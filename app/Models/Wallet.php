@@ -60,6 +60,7 @@ class Wallet extends Model
     protected $casts = [
         'type' => WalletType::class,
         'status' => WalletStatus::class,
+        'balance' => 'decimal:2',
     ];
 
     public function account(): BelongsTo
