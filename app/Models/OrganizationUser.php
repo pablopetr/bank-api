@@ -59,6 +59,7 @@ class OrganizationUser extends Model implements AuthenticatableContract
         'name',
         'email',
         'password',
+        'status',
     ];
 
     protected $hidden = [

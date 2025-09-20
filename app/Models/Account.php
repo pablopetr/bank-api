@@ -54,7 +54,6 @@ class Account extends Model
         'status',
         'accountable_id',
         'accountable_type',
-        'account_number',
     ];
 
     protected $casts = [
