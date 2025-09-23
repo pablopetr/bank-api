@@ -9,6 +9,6 @@ class TransferSeeder extends Seeder
 {
     public function run(): void
     {
-        Transfer::factory()->count(20)->create();
+        Transfer::factory()->count(200)->create();
     }
 }
