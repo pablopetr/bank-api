@@ -3,6 +3,7 @@
 namespace App\Actions\Transfers;
 
 use App\Enums\TransferStatus;
+use App\Events\TransferCompleted;
 use App\Exceptions\Wallets\DestinationWalletInactiveException;
 use App\Exceptions\Wallets\InsufficientBalanceInWalletToTransferException;
 use App\Exceptions\Wallets\InvalidTransferStatusException;
@@ -22,6 +23,8 @@ class ProcessTransfer
                 $transfer->toWallet->increment('balance', $transfer->amount);
 
                 $transfer->update(['status' => TransferStatus::Completed]);
+
+                event(new TransferCompleted($transfer));
 
                 return;
             }
