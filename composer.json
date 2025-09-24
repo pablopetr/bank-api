@@ -15,7 +15,8 @@
         "laravel/prompts": "^0.3.6",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "mongodb/laravel-mongodb": "^5.5"
+        "mongodb/laravel-mongodb": "^5.5",
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.3"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",
