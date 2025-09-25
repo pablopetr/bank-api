@@ -4,44 +4,74 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Wire\AMQPTable;
 
 class RabbitProvision extends Command
 {
     protected $signature = 'rabbit:provision
-        {queue=dev.sink.api.users.registered}
-        {routingKey=api.users.registered}
-        {exchange=app.events}';
+        {service=ledger}
+        {context=payments}
+        {purpose=extrato-writer}
+        {--bindings=payments.*.*,wallets.transactions.*}
+        {--env-prefix=dev}
+        {--exchange=app.events}
+        {--with-retry}
+        {--retry-ttl=30000}';
 
-    protected $description = 'Declara exchange, fila e binding no RabbitMQ';
+    protected $description = 'Provisiona exchanges, filas e bindings no RabbitMQ';
 
-    public function handle()
+    public function handle(): int
     {
-        $host = config('queue.connections.rabbitmq.hosts.0.host', env('RABBITMQ_HOST', 'rabbitmq'));
-        $port = (int)config('queue.connections.rabbitmq.hosts.0.port', env('RABBITMQ_PORT', 5672));
-        $user = config('queue.connections.rabbitmq.hosts.0.user', env('RABBITMQ_USER', 'guest'));
-        $pass = config('queue.connections.rabbitmq.hosts.0.password', env('RABBITMQ_PASSWORD', 'guest'));
-        $vhost= config('queue.connections.rabbitmq.hosts.0.vhost', env('RABBITMQ_VHOST', '/'));
+        $host  = config('queue.connections.rabbitmq.hosts.0.host', env('RABBITMQ_HOST', 'rabbitmq'));
+        $port  = (int) env('RABBITMQ_PORT', 5672);
+        $user  = env('RABBITMQ_USER', 'guest');
+        $pass  = env('RABBITMQ_PASSWORD', 'guest');
+        $vhost = env('RABBITMQ_VHOST', '/');
 
-        $exchange = $this->argument('exchange');
-        $queue    = $this->argument('queue');
-        $rk       = $this->argument('routingKey');
+        $exchange = $this->option('exchange');
+        $env      = $this->option('env-prefix');
+        $service  = $this->argument('service');
+        $context  = $this->argument('context');
+        $purpose  = $this->argument('purpose');
+
+        $queue    = "{$env}.{$service}.{$context}.{$purpose}";
+        $retryQ   = "{$queue}.retry";
+        $dlq      = "{$queue}.dlq";
 
         $conn = new AMQPStreamConnection($host, $port, $user, $pass, $vhost);
         $ch   = $conn->channel();
 
-        // garante exchange topic durável
         $ch->exchange_declare($exchange, 'topic', false, true, false);
+        $ch->exchange_declare('app.dlx', 'direct', false, true, false);
 
-        // garante fila durável
-        $ch->queue_declare($queue, false, true, false, false);
+        $ch->queue_declare($dlq, false, true, false, false);
 
-        // binding exchange -> fila com routing key
-        $ch->queue_bind($queue, $exchange, $rk);
+        if ($this->option('with-retry')) {
+            $ch->queue_declare($retryQ, false, true, false, false, false, new AMQPTable([
+                'x-dead-letter-exchange'    => '',
+                'x-dead-letter-routing-key' => $queue,
+                'x-message-ttl'             => (int) $this->option('retry-ttl'),
+            ]));
+        }
+
+        $ch->queue_declare($queue, false, true, false, false, false, new AMQPTable([
+            'x-dead-letter-exchange'    => 'app.dlx',
+            'x-dead-letter-routing-key' => $dlq,
+        ]));
+
+        $ch->queue_bind($dlq, 'app.dlx', $dlq);
+
+        $bindings = array_filter(array_map('trim', explode(',', $this->option('bindings'))));
+        foreach ($bindings as $rk) {
+            $ch->queue_bind($queue, $exchange, $rk);
+        }
 
         $ch->close();
         $conn->close();
 
-        $this->info("OK: exchange={$exchange} (topic), queue={$queue}, binding rk={$rk}");
+        $this->info("OK: exchange={$exchange}, queue={$queue}, retry={$retryQ}, dlq={$dlq}");
+        $this->info('Bindings: '.implode(', ', $bindings));
+
         return self::SUCCESS;
     }
 }

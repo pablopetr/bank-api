@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Services\RabbitPublisher;
-use Illuminate\Support\Facades\Log;
 
 readonly class PublishTransferCompleted
 {
@@ -17,8 +16,8 @@ readonly class PublishTransferCompleted
 
         $this->publisher->publish('payments.transfers.completed', [
             'transfer_id'    => $transfer->id,
-            'status'         => $transfer->status,
-            'amount'         => $transfer->amount,
+            'status'         => (string) $transfer->status,
+            'amount'         => (string) $transfer->amount,
             'from_account'   => $transfer->from_wallet_id,
             'to_account'     => $transfer->to_wallet_id,
             'occurred_at'    => now()->toIso8601String(),

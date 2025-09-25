@@ -2,43 +2,86 @@
 
 namespace App\Services;
 
+use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
+use Ramsey\Uuid\Uuid;
 
 class RabbitPublisher
 {
-    public function __construct(
-        private ?string $host = null,
-        private ?int    $port = null,
-        private ?string $user = null,
-        private ?string $pass = null,
-        private ?string $vhost = null,
-        private ?string $exchange = null,
-    ) {
-        $this->host = $this->host ?? config('queue.connections.rabbitmq.hosts.0.host', env('RABBITMQ_HOST', 'rabbitmq'));
-        $this->port = $this->port ?? (int) config('queue.connections.rabbitmq.hosts.0.port', env('RABBITMQ_PORT', 5672));
-        $this->user = $this->user ?? config('queue.connections.rabbitmq.hosts.0.user', env('RABBITMQ_USER', 'guest'));
-        $this->pass = $this->pass ?? config('queue.connections.rabbitmq.hosts.0.password', env('RABBITMQ_PASSWORD', 'guest'));
-        $this->vhost = $this->vhost ?? config('queue.connections.rabbitmq.hosts.0.vhost', env('RABBITMQ_VHOST', '/'));
-        $this->exchange = $this->exchange ?? config('queue.connections.rabbitmq.options.exchange.name', env('RABBITMQ_EXCHANGE', 'app.events'));
+    private AMQPStreamConnection $conn;
+    private AMQPChannel $ch;
+    private string $exchange;
+
+    public function __construct()
+    {
+        $host  = config('queue.connections.rabbitmq.hosts.0.host', env('RABBITMQ_HOST', 'rabbitmq'));
+        $port  = (int) config('queue.connections.rabbitmq.hosts.0.port', env('RABBITMQ_PORT', 5672));
+        $user  = config('queue.connections.rabbitmq.hosts.0.user', env('RABBITMQ_USER', 'guest'));
+        $pass  = config('queue.connections.rabbitmq.hosts.0.password', env('RABBITMQ_PASSWORD', 'guest'));
+        $vhost = config('queue.connections.rabbitmq.hosts.0.vhost', env('RABBITMQ_VHOST', '/'));
+
+        $this->exchange = env('RABBITMQ_EVENTS_EXCHANGE', 'app.events');
+
+        $this->conn = new AMQPStreamConnection($host, $port, $user, $pass, $vhost);
+        $this->ch   = $this->conn->channel();
+
+        $this->ch->exchange_declare($this->exchange, 'topic', false, true, false);
+
+        $this->ch->confirm_select();
     }
 
-    public function publish(string $routingKey, array $payload): void
+    /**
+     * @param string $eventType
+     * @param array $payload
+     * @param array $meta
+     */
+    public function publish(string $eventType, array $payload, array $meta = []): void
     {
-        $conn = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->pass, $this->vhost);
-        $ch = $conn->channel();
+        $eventId   = Uuid::uuid4()->toString();
+        $occurred  = now()->toImmutable()->utc();
+        $appId     = config('app.name', 'laravel-api');
+        $version   = 1;
 
-        $ch->exchange_declare($this->exchange, 'topic', false, true, false);
+        $idempotency = $payload['transfer_id'] ?? $payload['id'] ?? $eventId;
+        $idempotency .= '|' . $occurred->getTimestamp();
+
+        $body = [
+            'event_id'       => $eventId,
+            'event_type'     => $eventType,
+            'event_version'  => $version,
+            'occurred_at'    => $occurred->toIso8601String(),
+            'producer'       => $appId,
+            'idempotency_key'=> $idempotency,
+            'data'           => $payload,
+            'meta'           => $meta,
+        ];
 
         $msg = new AMQPMessage(
-            json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            ['content_type' => 'application/json', 'delivery_mode' => 2] // 2 = persistente
+            json_encode($body, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            [
+                'content_type'  => 'application/json',
+                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+                'message_id'    => $eventId,
+                'timestamp'     => $occurred->getTimestamp(),
+                'type'          => $eventType,
+                'app_id'        => $appId,
+                'application_headers' => new AMQPTable([
+                    'x-idempotency-key' => $idempotency,
+                    'x-event-version'   => $version,
+                ]),
+            ]
         );
 
-        $ch->basic_publish($msg, $this->exchange, $routingKey);
+        $this->ch->basic_publish($msg, $this->exchange, $eventType, true);
 
-        $ch->close();
+        $this->ch->wait_for_pending_acks_returns(5.0);
+    }
 
-        $conn->close();
+    public function __destruct()
+    {
+        try { $this->ch->close(); } catch (\Throwable) {}
+        try { $this->conn->close(); } catch (\Throwable) {}
     }
 }
