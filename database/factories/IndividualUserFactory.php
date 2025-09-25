@@ -16,7 +16,7 @@ class IndividualUserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => random_int(1, 1000) . fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
             'status' => UserStatus::WaitingForApproval->value,
         ];
