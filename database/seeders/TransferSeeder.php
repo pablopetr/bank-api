@@ -10,7 +10,7 @@ class TransferSeeder extends Seeder
 {
     public function run(): void
     {
-        Transfer::factory()->count(10)->create([
+        Transfer::factory()->count(1000)->create([
             'status' => TransferStatus::Pending->value,
         ]);
     }
