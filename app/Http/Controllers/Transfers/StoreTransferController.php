@@ -14,10 +14,10 @@ class StoreTransferController extends Controller
     {
         $data = $request->validated();
 
-        $defaultDestinationWallet = (new FindDefaultWalletFromAccountToTransfer())->execute($data['destination_account_number']);
+        $defaultDestinationWallet = (new FindDefaultWalletFromAccountToTransfer)->execute($data['destination_account_number']);
         $sourceWallet = Wallet::findOrFail($data['source_wallet_id']);
 
-        $transfer = (new CreateTransfer())->execute($sourceWallet, $defaultDestinationWallet, $data['amount']);
+        $transfer = (new CreateTransfer)->execute($sourceWallet, $defaultDestinationWallet, $data['amount']);
 
         return response()->json([
             'message' => 'Transfer created successfully!',

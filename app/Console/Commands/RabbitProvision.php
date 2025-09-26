@@ -22,24 +22,24 @@ class RabbitProvision extends Command
 
     public function handle(): int
     {
-        $host  = config('queue.connections.rabbitmq.hosts.0.host', env('RABBITMQ_HOST', 'rabbitmq'));
-        $port  = (int) env('RABBITMQ_PORT', 5672);
-        $user  = env('RABBITMQ_USER', 'guest');
-        $pass  = env('RABBITMQ_PASSWORD', 'guest');
+        $host = config('queue.connections.rabbitmq.hosts.0.host', env('RABBITMQ_HOST', 'rabbitmq'));
+        $port = (int) env('RABBITMQ_PORT', 5672);
+        $user = env('RABBITMQ_USER', 'guest');
+        $pass = env('RABBITMQ_PASSWORD', 'guest');
         $vhost = env('RABBITMQ_VHOST', '/');
 
         $exchange = $this->option('exchange');
-        $env      = $this->option('env-prefix');
-        $service  = $this->argument('service');
-        $context  = $this->argument('context');
-        $purpose  = $this->argument('purpose');
+        $env = $this->option('env-prefix');
+        $service = $this->argument('service');
+        $context = $this->argument('context');
+        $purpose = $this->argument('purpose');
 
-        $queue    = "{$env}.{$service}.{$context}.{$purpose}";
-        $retryQ   = "{$queue}.retry";
-        $dlq      = "{$queue}.dlq";
+        $queue = "{$env}.{$service}.{$context}.{$purpose}";
+        $retryQ = "{$queue}.retry";
+        $dlq = "{$queue}.dlq";
 
         $conn = new AMQPStreamConnection($host, $port, $user, $pass, $vhost);
-        $ch   = $conn->channel();
+        $ch = $conn->channel();
 
         $ch->exchange_declare($exchange, 'topic', false, true, false);
         $ch->exchange_declare('app.dlx', 'direct', false, true, false);
@@ -48,14 +48,14 @@ class RabbitProvision extends Command
 
         if ($this->option('with-retry')) {
             $ch->queue_declare($retryQ, false, true, false, false, false, new AMQPTable([
-                'x-dead-letter-exchange'    => '',
+                'x-dead-letter-exchange' => '',
                 'x-dead-letter-routing-key' => $queue,
-                'x-message-ttl'             => (int) $this->option('retry-ttl'),
+                'x-message-ttl' => (int) $this->option('retry-ttl'),
             ]));
         }
 
         $ch->queue_declare($queue, false, true, false, false, false, new AMQPTable([
-            'x-dead-letter-exchange'    => 'app.dlx',
+            'x-dead-letter-exchange' => 'app.dlx',
             'x-dead-letter-routing-key' => $dlq,
         ]));
 

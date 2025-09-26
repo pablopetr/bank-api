@@ -4,12 +4,12 @@ namespace App\Actions\Transfers;
 
 use App\Enums\TransferStatus;
 use App\Events\TransferCompleted;
+use App\Events\TransferFailed;
 use App\Exceptions\Wallets\DestinationWalletInactiveException;
 use App\Exceptions\Wallets\InsufficientBalanceInWalletToTransferException;
 use App\Exceptions\Wallets\InvalidTransferStatusException;
 use App\Exceptions\Wallets\SourceWalletInactiveException;
 use App\Models\Transfer;
-use RuntimeException;
 
 class ProcessTransfer
 {
@@ -30,6 +30,8 @@ class ProcessTransfer
             }
         } catch (InsufficientBalanceInWalletToTransferException|DestinationWalletInactiveException|SourceWalletInactiveException) {
             $transfer->update(['status' => TransferStatus::Failed]);
+
+            event(new TransferFailed($transfer));
         } catch (InvalidTransferStatusException $exception) {
             report($exception);
         }

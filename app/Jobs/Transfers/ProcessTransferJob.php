@@ -11,12 +11,10 @@ class ProcessTransferJob implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public Transfer $transfer)
-    {
-    }
+    public function __construct(public Transfer $transfer) {}
 
     public function handle(): void
     {
-        (new ProcessTransferAction())->execute($this->transfer);
+        (new ProcessTransferAction)->execute($this->transfer);
     }
 }

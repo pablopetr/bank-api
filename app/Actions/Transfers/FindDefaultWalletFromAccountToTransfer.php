@@ -13,14 +13,14 @@ class FindDefaultWalletFromAccountToTransfer
     {
         $account = Account::query()->where('number', $accountNumber)->firstOrFail();
 
-        if($account->status == AccountStatus::Inactive) {
-            throw new \RuntimeException("Account is inactive.");
+        if ($account->status == AccountStatus::Inactive) {
+            throw new \RuntimeException('Account is inactive.');
         }
 
         $defaultWallet = $account->wallets()->where('type', WalletType::Default->value)->first();
 
-        if (!$defaultWallet) {
-            throw new \RuntimeException("Default wallet not found for the account.");
+        if (! $defaultWallet) {
+            throw new \RuntimeException('Default wallet not found for the account.');
         }
 
         return $defaultWallet;

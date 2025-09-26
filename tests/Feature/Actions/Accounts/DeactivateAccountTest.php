@@ -7,7 +7,7 @@ use App\Models\Account;
 it('should be able to deactivate account', function () {
     $account = Account::factory()->create(['status' => AccountStatus::Active]);
 
-    (new DeactivateAccount())->execute($account->id);
+    (new DeactivateAccount)->execute($account->id);
 
     $this->assertDatabaseHas('accounts', [
         'id' => $account->id,
@@ -18,8 +18,8 @@ it('should be able to deactivate account', function () {
 it('should not be able to deactivate an already inactive account', function () {
     $account = Account::factory()->create(['status' => AccountStatus::Inactive]);
 
-    expect(fn () => (new DeactivateAccount())->execute($account->id))
-        ->toThrow(RuntimeException::class, "Account is already inactive.");
+    expect(fn () => (new DeactivateAccount)->execute($account->id))
+        ->toThrow(RuntimeException::class, 'Account is already inactive.');
 
     $this->assertDatabaseHas('accounts', [
         'id' => $account->id,

@@ -5,9 +5,9 @@ use App\Enums\UserStatus;
 use App\Models\OrganizationUser;
 
 it('should create an account when an organization user is approved', function () {
-   $organizationUser = OrganizationUser::factory()->create([
-       'status' => UserStatus::WaitingForApproval,
-   ]);
+    $organizationUser = OrganizationUser::factory()->create([
+        'status' => UserStatus::WaitingForApproval,
+    ]);
 
     expect($organizationUser->accounts)->toBeEmpty();
 
@@ -19,4 +19,3 @@ it('should create an account when an organization user is approved', function ()
         ->and($organizationUser->accounts->first()->number)->toBeInt()
         ->and($organizationUser->accounts->first()->status)->toBe(AccountStatus::Active);
 });
-

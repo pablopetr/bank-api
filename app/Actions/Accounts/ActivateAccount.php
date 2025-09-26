@@ -12,7 +12,7 @@ class ActivateAccount
         $account = Account::query()->findOrFail($accountId);
 
         if ($account->status === AccountStatus::Active) {
-            throw new \RuntimeException("Account is already active.");
+            throw new \RuntimeException('Account is already active.');
         }
 
         $account->update([

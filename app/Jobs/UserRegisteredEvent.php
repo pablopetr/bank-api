@@ -12,12 +12,10 @@ class UserRegisteredEvent implements ShouldQueue
 
     public $connection = 'rabbitmq';
 
-    public function __construct(public array $payload)
-    {
-    }
+    public function __construct(public array $payload) {}
 
     public function handle(): void
     {
-        Log::info("[UserRegisteredEvent] Payload: " . json_encode($this->payload));
+        Log::info('[UserRegisteredEvent] Payload: '.json_encode($this->payload));
     }
 }

@@ -17,7 +17,7 @@ it('should be able to create a transfer', function (string $model) {
     $sourceAccount = Account::factory()->create([
         'accountable_id' => $user->id,
         'accountable_type' => $model,
-        'status' => AccountStatus::Active
+        'status' => AccountStatus::Active,
     ]);
 
     Sanctum::actingAs($user, ['*']);
@@ -29,7 +29,7 @@ it('should be able to create a transfer', function (string $model) {
     ]);
 
     $destinationAccount = Account::factory()->create([
-        'status' => AccountStatus::Active
+        'status' => AccountStatus::Active,
     ]);
 
     Wallet::factory()->create([

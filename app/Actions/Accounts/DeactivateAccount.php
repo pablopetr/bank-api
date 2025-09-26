@@ -12,7 +12,7 @@ class DeactivateAccount
         $account = Account::query()->findOrFail($accountId);
 
         if ($account->status === AccountStatus::Inactive) {
-            throw new \RuntimeException("Account is already inactive.");
+            throw new \RuntimeException('Account is already inactive.');
         }
 
         $account->update([

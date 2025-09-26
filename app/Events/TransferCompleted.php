@@ -11,7 +11,5 @@ class TransferCompleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Transfer $transfer)
-    {
-    }
+    public function __construct(public Transfer $transfer) {}
 }

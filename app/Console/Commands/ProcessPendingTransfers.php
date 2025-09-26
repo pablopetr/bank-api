@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command as CommandAlias;
 class ProcessPendingTransfers extends Command
 {
     protected $signature = 'app:process-pending-transfers';
+
     protected $description = 'Command description';
 
     public function handle(): int
