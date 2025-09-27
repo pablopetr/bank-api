@@ -13,7 +13,7 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
 
-        $user = (new CreateUser())->execute($data);
+        $user = (new CreateUser)->execute($data);
 
         $token = $user->createToken('organization_users')->plainTextToken;
 

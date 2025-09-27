@@ -6,9 +6,7 @@ use App\Services\RabbitPublisher;
 
 class PublishUserCreated
 {
-    public function __construct(public RabbitPublisher $publisher)
-    {
-    }
+    public function __construct(public RabbitPublisher $publisher) {}
 
     public function handle(object $event): void
     {

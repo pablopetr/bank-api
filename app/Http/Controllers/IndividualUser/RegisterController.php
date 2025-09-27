@@ -5,7 +5,6 @@ namespace App\Http\Controllers\IndividualUser;
 use App\Actions\IndividualUser\CreateUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndividualUser\RegisterIndividualUserRequest;
-use App\Models\IndividualUser;
 use Illuminate\Http\JsonResponse;
 
 class RegisterController extends Controller
@@ -14,7 +13,7 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
 
-        $user = (new CreateUser())->execute($data);
+        $user = (new CreateUser)->execute($data);
 
         $token = $user->createToken('ind-auth')->plainTextToken;
 

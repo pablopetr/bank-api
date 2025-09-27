@@ -19,9 +19,11 @@ class UpdateUserStatusJob implements ShouldQueue
     public function handle(): void
     {
         $user = OrganizationUser::where('id', $this->userId)
-            ->update(['status' => $this->status->value]);
+            ->firstOrFail();
 
-        if($this->status == UserStatus::Approved) {
+        $user->update(['status' => $this->status->value]);
+
+        if ($this->status == UserStatus::Approved) {
             event(new UserApproved($user));
         }
     }

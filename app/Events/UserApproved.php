@@ -12,7 +12,5 @@ class UserApproved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public IndividualUser|OrganizationUser $user)
-    {
-    }
+    public function __construct(public IndividualUser|OrganizationUser $user) {}
 }

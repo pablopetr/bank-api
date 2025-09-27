@@ -3,6 +3,7 @@
 namespace App\Jobs\IndividualUser;
 
 use App\Enums\UserStatus;
+use App\Events\UserCreated;
 use App\Models\IndividualUser;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,7 +18,13 @@ class UpdateUserStatusJob implements ShouldQueue
 
     public function handle(): void
     {
-        IndividualUser::where('id', $this->userId)
-            ->update(['status' => $this->status->value]);
+        $user = IndividualUser::where('id', $this->userId)
+            ->firstOrFail();
+
+        $user->update(['status' => $this->status->value]);
+
+        if ($this->status == UserStatus::Approved) {
+            event(new UserCreated($user));
+        }
     }
 }
