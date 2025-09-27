@@ -3,6 +3,7 @@
 namespace App\Jobs\OrganizationUser;
 
 use App\Enums\UserStatus;
+use App\Events\UserApproved;
 use App\Models\OrganizationUser;
 use Illuminate\Bus\Batchable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,7 +18,11 @@ class UpdateUserStatusJob implements ShouldQueue
 
     public function handle(): void
     {
-        OrganizationUser::where('id', $this->userId)
+        $user = OrganizationUser::where('id', $this->userId)
             ->update(['status' => $this->status->value]);
+
+        if($this->status == UserStatus::Approved) {
+            event(new UserApproved($user));
+        }
     }
 }
