@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\IndividualUser;
 
+use App\Actions\IndividualUser\CreateUser;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndividualUser\RegisterIndividualUserRequest;
 use App\Models\IndividualUser;
@@ -13,11 +14,7 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
 
-        $user = IndividualUser::query()->create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        $user = (new CreateUser())->execute($data);
 
         $token = $user->createToken('ind-auth')->plainTextToken;
 
