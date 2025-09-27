@@ -3,6 +3,7 @@
 namespace App\Jobs\IndividualUser;
 
 use App\Enums\UserStatus;
+use App\Events\UserApproved;
 use App\Events\UserCreated;
 use App\Models\IndividualUser;
 use Illuminate\Bus\Batchable;
@@ -24,7 +25,7 @@ class UpdateUserStatusJob implements ShouldQueue
         $user->update(['status' => $this->status->value]);
 
         if ($this->status == UserStatus::Approved) {
-            event(new UserCreated($user));
+            event(new UserApproved($user));
         }
     }
 }
