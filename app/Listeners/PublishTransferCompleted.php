@@ -23,8 +23,6 @@ readonly class PublishTransferCompleted
             'transfer_id' => $transfer->id,
             'status' => $transfer->status->value,
             'amount' => (string) $transfer->amount,
-            'from_account' => $transfer->from_wallet_id,
-            'to_account' => $transfer->to_wallet_id,
             'occurred_at' => now()->toIso8601String(),
             'idempotency_key' => $transfer->id.'|'.$transfer->updated_at?->timestamp,
         ]);
